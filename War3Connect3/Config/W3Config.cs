@@ -50,7 +50,7 @@ namespace War3Connect3.Config
             {
                 input = File.ReadAllText("config.txt");
             }
-            catch (FileNotFoundException ex)
+            catch (FileNotFoundException)
             {
                 using (new SetColor(ConsoleColor.Red))
                     Console.Write("Config file not found,");

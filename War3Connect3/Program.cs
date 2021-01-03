@@ -9,7 +9,7 @@ namespace War3Connect3
         static void Main(string[] args)
         {
             Console.Title = "War3Connect3 - LAN utility";
-            Console.WriteLine("This is an app that can connect warcraft 3 lan over the internet if you have your ports properly forwarded.");
+            Console.WriteLine("This is the app that can connect warcraft 3 lan over the internet if you have your ports properly forwarded.");
 
             var p = new Program();
 
@@ -27,16 +27,15 @@ namespace War3Connect3
 
 
         W3Config config;
-
+        PacketSender packetSender;
         public Program()
         {
-            config = new Config.W3Config();
-
-            new PacketSender();
+            config = new W3Config();
+            packetSender = new PacketSender(config);
 
 
             using (new SetColor(ConsoleColor.Green))
-                Console.WriteLine("Start Warcraft 3 -> lan");
+                Console.WriteLine("Start Warcraft 3 -> lan --- if you cannot see the hosted game, everyone should restart warcraft (including the host)");
         }
 
 

@@ -14,22 +14,22 @@ namespace War3Connect3.Config
         // tested for v1.27.1.7085 CZ (byte 0x1b=27 should stand for path version)
         // 0x50, 0x58, 0x33, 0x57 is PX3W which is reversed W3XP(expansion), 
         public readonly int W3_PORT = 6112;
-        public readonly byte[] W3_UDP_GAMES_QUERY = { 0xf7, 0x2f, 0x10, 0x00, 0x50, 0x58, 0x33, 0x57, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-        public readonly double UDP_HEARTBEAT = TimeSpan.FromSeconds(3).TotalMilliseconds;
+        public readonly byte[] UDP_W3_GAMES_QUERY = { 0xf7, 0x2f, 0x10, 0x00, 0x50, 0x58, 0x33, 0x57, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        public readonly double UDP_SEND_INTERVAL = TimeSpan.FromSeconds(3).TotalMilliseconds;
 
 
         // IP of the PC that is running this program
-        public IPAddress LocalIP { get; set; }
+        private IPAddress LocalIP { get; set; }
 
         // IP of the PC that has a hosted W3 game
-        public IPAddress RemoteIP { get; set; }
+        private IPAddress RemoteIP { get; set; }
 
 
-        public IPEndPoint localEndPoint;
+        private IPEndPoint localEndPoint;
         public IPEndPoint LocalEndPoint => localEndPoint ??= new IPEndPoint(LocalIP, W3_PORT);
                
                
-        public IPEndPoint remoteEndPoint;
+        private IPEndPoint remoteEndPoint;
         public IPEndPoint RemoteEndPoint => remoteEndPoint ??= new IPEndPoint(RemoteIP, W3_PORT);
 
         public int PacketSentCount { get; set; } = 0;

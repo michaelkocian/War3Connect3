@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using War3Connect3.UI;
 
 namespace War3Connect3.Config
@@ -14,8 +12,14 @@ namespace War3Connect3.Config
         // tested for v1.27.1.7085 CZ (byte 0x1b=27 should stand for path version)
         // 0x50, 0x58, 0x33, 0x57 is PX3W which is reversed W3XP(expansion), 
         public readonly int W3_PORT = 6112;
-        public readonly byte[] UDP_W3_GAMES_QUERY = { 0xf7, 0x2f, 0x10, 0x00, 0x50, 0x58, 0x33, 0x57, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        public readonly byte[] UDP_W3_GAMES_QUERY_1_27 = { 0xf7, 0x2f, 0x10, 0x00, 0x50, 0x58, 0x33, 0x57, 0x1b, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+        public readonly byte[] UDP_W3_GAMES_QUERY_1_29 = { 0xf7, 0x2f, 0x10, 0x00, 0x50, 0x58, 0x33, 0x57, 0x1d, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
         public readonly double UDP_SEND_INTERVAL = TimeSpan.FromSeconds(3).TotalMilliseconds;
+
+        public byte[] UDP_W3_GAMES_QUERY = null;
+
+
+        public void SetW3Query(byte verByte) => UDP_W3_GAMES_QUERY = new byte[] { 0xf7, 0x2f, 0x10, 0x00, 0x50, 0x58, 0x33, 0x57, verByte, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 
 
         // IP of the PC that is running this program
@@ -27,8 +31,8 @@ namespace War3Connect3.Config
 
         private IPEndPoint localEndPoint;
         public IPEndPoint LocalEndPoint => localEndPoint ??= new IPEndPoint(LocalIP, W3_PORT);
-               
-               
+
+
         private IPEndPoint remoteEndPoint;
         public IPEndPoint RemoteEndPoint => remoteEndPoint ??= new IPEndPoint(RemoteIP, W3_PORT);
 
@@ -46,6 +50,8 @@ namespace War3Connect3.Config
         {
             IPAddress addr;
             string input = "";
+            int w3ver = GetW3Version();
+            SetW3Query((byte)w3ver);
             try
             {
                 input = File.ReadAllText("config.txt");
@@ -74,7 +80,7 @@ namespace War3Connect3.Config
                 GetHostIpFromInput();
             }
         }
-    
+
 
         private void GetHostIpFromInput()
         {
@@ -92,6 +98,26 @@ namespace War3Connect3.Config
                 else
                     using (new SetColor(ConsoleColor.Red))
                         Console.WriteLine("This is not a valid ip address");
+            }
+        }
+
+        private int GetW3Version()
+        {
+            int version;
+            while (true)
+            {
+                Console.WriteLine("Enter you warcraft3 version (1.07, 1.08, .., 1.30)");
+                string ver = Console.ReadLine().ToLower();
+
+                if (ver.Length == 4 && ver.StartsWith("1."))
+                {
+                    if (int.TryParse(ver.Substring(2), out version))
+                    {
+                        return version;
+                    }
+                }
+                using (new SetColor(ConsoleColor.Red))
+                    Console.WriteLine("This is not a supported w3 version");
             }
         }
 
